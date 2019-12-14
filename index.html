@@ -8,5 +8,16 @@
 </head>
 <body>
     <h1>Hello World</h1>
+    <script>
+        fetch('http://colorhomes.ddns.net:8081/api/fs/listing')
+        .then(res=>{ 
+            console.log(res);
+            console.log(res.status);
+            return res.json();
+        })
+        .catch(err=>{
+            console.log("Catch Error : ",err)
+        })    
+    </script>
 </body>
 </html>
