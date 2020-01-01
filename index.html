@@ -4,20 +4,252 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Vijay Test Page</title>
+    <!-- <meta name="google-signin-client_id" content="3339472325-1ggbeee3t78iplbmhuet40lomsepv2oa.apps.googleusercontent.com"> -->
+    <title>Document</title>  
+    <link rel="stylesheet" href="style/commons.css">  
+    <link rel="stylesheet" href="style/main.css">
+    <link rel="stylesheet" href="style/mainmob.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>  
+        .fa{
+            cursor: pointer;   
+        }
+        #file{
+            position: absolute;
+            top: 50px;
+        }
+        .list{
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.7);
+            width: 170px;
+            right: 20px;
+            top: 40px;
+            height: 0px;
+            overflow: hidden;
+            transition: all 0.2s ease-in-out;
+        }
+        .list p {
+            text-align: left;
+            font-size: 15px;
+            padding: 10px 2px;
+            padding-left: 10px;
+            margin: 0px px;
+        }
+        .list p:hover {
+            background-color: rgba(0, 0, 0, 1);
+            cursor: pointer;
+        }
+        .btn{
+            display: inline-block;
+            padding: 2px 2px;
+            text-align: center;
+            transition: all 0.2s ease-in-out;
+            position: relative;
+            /* float: right; */
+        }
+        .btn:hover{
+            cursor: pointer;
+        }
+
+        /* folder name */
+        .folName{
+            height: 125px;
+            width: 500px;
+            padding: 20px 15px;
+            background-color: rgb(233, 233, 233);
+            text-align: center;
+            margin: 0px 30px;
+            margin-top: 100px;
+        }
+        .folName h3{
+            text-align: left;
+            margin-bottom: 10px;
+        }
+        .folName input[type=text]{
+            border: none;
+            width: 70%;
+            background-color: white;
+            margin: 5px 0px;
+            padding-left: 10px;
+            height: 34px;
+        }
+        .folName button{
+            padding: 8px 15px;
+            background-color: #4CAF50;
+            border: none;
+            width: 27%;
+            font-weight: bold;
+            color: white;
+        }
+        #link-share{
+            /* z-index: 110; */
+            position: fixed;
+            top: -200px;
+        }
+        #container .empty{
+            text-align: center;
+            margin-top: 200px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .hide-me{
+            position: fixed;
+            top: -300px;
+        }
+        .uname{
+            position: absolute;
+            width: 13%;
+            bottom: -3px;
+            font-size: 8px;
+            text-align: right;
+        }
+    </style>
 </head>
 <body>
-    <h1>Hello World</h1>
-    <script>
-        fetch('http://colorhomes.ddns.net:8081/api/fs/listing')
-        .then(res=>{ 
-            console.log(res);
-            console.log(res.status);
-            return res.json();
+    <input class="hide-me" type="text" id="link-sharing-inp" value="">    
+    <span class="back-to-top-btn" id="back-to-top-btn" onclick="moveToTop();" >&#8679;</span>
+    <span class="more-options" id="more-options"><i class="fa fa-chevron-down"></i></span>
+    <div class="more-options-container flex" id="more-options-container">
+        <!-- Link sharing -->
+        <span id="link-sharing" title="Share this Folder"><i class="fa fa-link"></i></span>
+    </div>
+
+    <!-- Route / Path -->
+    <div class="path" id="path" >
+        <div style="width: 95%;" >
+            <span class="route" style="font-size:30px;" onclick="clearRoute();" >&#127968;</span>
+            <span id="routes"></span>
+        </div>
+        <div style="width: 15%;text-align: right;poisition: relative;">
+            <input id="file" type="file" hidden="hidden" name="photo" onchange="uploadFilesSequentially(event)" accept="image/png, image/jpeg" multiple/>
+            <div class="btn" id="listbtn" onclick="toggleList();" ><i class="fa fa-cog" aria-hidden="true"></i></div>
+            <div class="btn" id="" onclick="logout();" ><i class="fa fa-power-off" aria-hidden="true"></i></div>            
+            <p class="uname" id="uname" ></p>
+            <div class="list" id="list">                
+                <p onclick="toggleNewFolderModal();" ><i class="fa fa-folder-o" aria-hidden="true"></i> New Folder</p>
+                <p onclick="upload();"><i class="fa fa-upload" aria-hidden="true"></i> Upload File(s)</p>
+                <p style="border-top: 0.3px solid white;" ><input type="checkbox" onclick="toggleList();" id="dowload-hq"><i class="fa fa-download" style="margin-left: 13px;"></i> pics in HQ</p>
+            </div>            
+        </div>
+    </div>
+
+    <!-- Files a=and folders  -->
+    <div class="container" id="container">  
+        <div class="empty" ></div>
+    </div>
+    <div id="link-share">Hello world html</div>
+    <!-- Modal - Slideshow -->
+    <div class="modal-container-bg" id="modal-slideshow" > 
+        <div style="position: relative;width: 100%;height: 100%;" >            
+            <div class="modal-content">
+                <div class="modal-top-menu flex">
+                    <div id="ss" onclick="slideShow();" class="play"></div>
+                    <div style="position: relative;display:none;" id="slider" >
+                        <span style="position: absolute;top:-10px;color: white;font-size: 9px;" >Transition Speed</span>                            
+                        <input type="range" min="1000" max="10000" class="slider" oninput="fast();" onchange="fast();" value="3000" step="1000" class="slider" id="time">
+                        <span id="timeout">Hello</span>
+                    </div>
+                    <span class="download" id="ss-download" onclick="download('');" ><i class="fa fa-download" aria-hidden="true"></i></span>
+                    <span id="link-sharing-ss" id="" onclick="getSharableLink();" ><i class="fa fa-link" aria-hidden="true"></i></span>
+                    <div id="modal-close-btn" class="modal-close-btn" onclick="closeModal();" ></div>
+                </div>
+                <div class="center flex" >
+                    <div class="modal-img" id="modal-img" ></div>
+                </div>              
+                <div class="left" title="Previous" onclick="fetchAndView(false);" ></div>                  
+                <div class="right" title="Next" onclick="fetchAndView(true);" ></div>
+            </div>            
+        </div>        
+    </div>
+
+    <!-- Modal - NewFolder -->
+    <div class="modal-container-bg" id="modal-newfolder">
+        <div class="modal-content" style='flex-direction: row;justify-content: center;' >
+            <div class="folName">
+                <div id="modal-close-btn" class="modal-close-btn" onclick="toggleNewFolderModal();" ></div>
+                <h3>Enter Folder Name :</h3>
+                <input type="text" name="" id="folName">
+                <button onclick="createNewFolder();" >Create</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal - DisplayNotification -->
+    <div class="notification-container" id="notification-container">
+        <i class="fa fa-times" style="float: right;" id="notification-container-close"></i>
+        <div class="notification-content" id="notification-content"></div>
+    </div>
+
+    <!-- Upload Progress -->
+    <div class="uploads" id="uploads">
+        <div class="upload-head">
+            <div class="upload-head-text" id="upload-head-text">Uploading</div>
+            <div class="upload-head-btn" id="upload-head-btn" onclick="toggleUploadProgress(this);" ><i class="fa fa-chevron-down" aria-hidden="true"></i></div>
+        </div>
+        <div class="uploads-items" id="uploads-items">
+            <!-- <div class="uploads-item" >
+                <div class="filename">Hello world testHello world testHello world test</div>
+                <progress class="progress" min="0" max="100" value="20"></progress>
+            </div> -->
+        </div>
+    </div>
+
+    <script src="./js/commons.js"></script>    
+    <script src="./js/dirview.js"></script>
+    <script src="./js/slideview.js"></script>
+    <script src="./js/main.js"></script>
+    <script>    
+
+        if(isSignedIn()){
+            _('uname').innerHTML = retrive('uname')
+        }
+
+        fetchDir();          
+
+        function fast(){
+            _('timeout').innerHTML  = (parseInt(_('time').value)/1000)+'s';
+            slideInterval = _('time').value;
+        }
+        fast();
+
+        function logout(){
+            window.localStorage.clear();
+            redirect('/signin.html');
+        }
+
+        /** Event listeners */
+
+        /* More option down arrow */
+        _('more-options').addEventListener('click',()=>{
+            _('more-options-container').style.top = '0px';
+            setTimeout(()=>{
+                _('more-options-container').style.top = '-40px';
+            }, displayTime);
         })
-        .catch(err=>{
-            console.log("Catch Error : ",err)
-        })    
+
+        /* Link Sharing function */
+        _('link-sharing').addEventListener('click', async ()=>{
+            let res = await get('/api/nostalgic/share/'+currentDirPath);
+            // if(!res.link){
+            //     showWarning('You cannot share home folder');
+            //     return;
+            // }
+            let txt = _('link-share');
+            console.log(baseURL+res.link)
+            txt.innerHTML = baseURL+res.link;
+            if (document.selection) { // IE
+                var range = document.body.createTextRange();
+                range.moveToElementText(_('link-share'));
+                range.select();
+            } else if (window.getSelection) {
+                var range = document.createRange();
+                range.selectNode(_('link-share'));
+                window.getSelection().removeAllRanges();
+                window.getSelection().addRange(range);
+            }
+            document.execCommand("copy");            
+            showNotification('Shareable link Copied to clipboard');
+        })
     </script>
 </body>
 </html>

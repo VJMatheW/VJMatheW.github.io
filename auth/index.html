@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Authorization</title>
+    <link rel="stylesheet" href="../style/commons.css">
+</head>
+<body>
+    <div class="modal-container-bg" style="color: white;">
+        <div class="modal-content" style='flex-direction: row;justify-content: center;' >
+            Hello world
+        </div>
+    </div>
+    <!-- Modal - DisplayNotification -->
+    <div class="notification-container" id="notification-container">
+        <i class="fa fa-times" style="float: right;" id="notification-container-close"></i>
+        <div class="notification-content" id="notification-content"></div>
+    </div>
+    <script src="../js/commons.js"></script>
+    <script src="../js/main.js"></script>
+    <script>
+        window.onload = async ()=>{
+            console.log('loaded')
+            let url = window.location.href
+            console.log(url)
+            if(url.includes('?')){
+                // let arr = url.split('#')
+                let o = getUrlVars()['o']
+                console.log('ObT',o)
+                let res = await get('/api/auth/'+o)
+                showNotification('Successfully Done ', false)
+                setTimeout(()=>{
+                    redirect(''); }, 5000);
+            }
+        }  
+
+        function getUrlVars() {
+            let vars = {};
+            let parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+                vars[key] = value;
+            });
+            return vars;
+        }     
+    </script>    
+</body>
+</html>

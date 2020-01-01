@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- <meta name="google-signin-client_id" content="3339472325-1ggbeee3t78iplbmhuet40lomsepv2oa.apps.googleusercontent.com"> -->
+    <title>Document</title>  
+    <link rel="stylesheet" href="style/commons.css">  
+    <link rel="stylesheet" href="style/main.css">
+    <link rel="stylesheet" href="style/mainmob.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+    <!-- Modal - DisplayNotification -->
+    <div class="notification-container" id="notification-container">
+        <i class="fa fa-times" style="float: right;" id="notification-container-close"></i>
+        <div class="notification-content" id="notification-content"></div>
+    </div>
+
+    <!-- Login or Sign Up -->
+    <div class="modal-container-bg" style="display:block;">
+        <div class="modal-content-center">
+            <div class="card">
+                <div class="card-head">
+                    <div class="card-head-active" onclick="toggleCard(event);" >Sign In</div>
+                    <div onclick="toggleCard(event);" >Sign Up</div>
+                </div>
+                <!-- Sign In Content -->
+                <div class="card-content-login" id="signin" style="display: block;" >
+                    <div>
+                        <input type="text" placeholder="Mobile No" maxlength="10" id="mob-in">
+                        <input type="password" placeholder="Password" name="" id="pass-in">
+                        <a href="#">Forgot Password</a>
+                        <button onclick="signin();" >Sign In</button>
+                    </div>
+                    <div class="modal-content-center">
+                        or
+                    </div>
+                    <div>
+                        <div id="customBtn">
+                            <span style="width: 100%;" ><i class="fa fa-google" style="color:rgba(145, 7, 7, 1);" aria-hidden="true"></i> Google</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Sign Up -->
+                <div id="signup" class="card-content-login" >
+                    <div>
+                        <input type="text" placeholder="Name"  id="name-up">
+                        <input type="text" placeholder="Mobile No" maxlength="10" id="mob-up">
+                        <input type="password" placeholder="Password" name="" id="pass-up">
+                        <input type="password" placeholder="Re-Type Password" name="" id="pass1-up">
+                        <button onclick="signup();" >Sign Up</button>
+                    </div>
+                </div>
+                <!-- Enter OTP -->
+                <div id="otp-card" class="card-content-login" >
+                    <div style="margin-top:30px;" >
+                        <input type="text" hidden name="" id="u_id">
+                        <h6>NOTE: It takes time (Max 5 min) to receive otp so dont exaggerate</h6>
+                        <input type="text" placeholder="Enter OTP" maxlength="6" id="otp">
+                        <button onclick="confirmOTP();">Confirm</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://apis.google.com/js/api:client.js"></script>
+    <script src="./js/commons.js"></script>
+    <script src="./js/main.js"></script>
+    <script>
+
+        startApp(); // google sign in   
+
+        var clientUnique = Math.floor(Math.random()* 1000)  
+
+        function storeToken(obj){
+            store('token', obj.token)
+            store('clientId', obj.clientId)
+            store('uid', obj.uid)
+            store('uname', obj.u_name)
+        }
+
+        async function confirmOTP(){
+            let uid = _('u_id').value;
+            let otp = _('otp').value;
+            let error = sanitize({ 'otp': otp })
+            if(error.length > 0){
+                showWarning(error[0]);
+                return;
+            }
+            let postData = {
+                'u_id': uid,
+                'otp': otp,
+                'clientId': clientUnique
+            }
+            let res = await post('/auth/otp', postData);
+            if(!res){
+                return;
+            }
+            storeToken(res)
+            if(window.location.href.includes('#')){
+                redirect(window.location.href);
+            }else{
+                redirect('')
+            }
+        }
+
+        async function signin(){
+            let mobile_no = _('mob-in').value;
+            let pass = _('pass-in').value;
+            let error = sanitize({'mobile_no': mobile_no, 'password': pass });
+            if(error.length > 0){
+                showWarning(error[0]);
+                return;
+            }
+            let data = {
+                'mobile_no': mobile_no,
+                'password': pass,
+                'clientId': clientUnique
+            }
+            let res = await post('/auth/signin', data);
+            if(!res){
+                return;
+            }
+            storeToken(res)
+            console.log(window.location)
+            if(window.location.href.includes('#')){
+                redirect(window.location.href);
+            }else{
+                redirect('')
+            }
+            
+        }
+
+        async function signup(){            
+            let name = _('name-up').value;
+            let mobile_no = _('mob-up').value;
+            let pass = _('pass-up').value;
+            let pass1 = _('pass1-up').value;
+            let error = sanitize({ 'name': name, 'mobile_no': mobile_no, 'password': pass, 'password1':pass1 });
+            if(error.length > 0){
+                showWarning(error[0]);
+                return;
+            }
+            // send to server 
+            let data = {
+                u_name: name,
+                mobile_no: mobile_no,
+                password: pass
+            }
+            let res = await post('/auth/signup', data);
+            if(!res){ // when res is undefiend means some error occurred
+                return;
+            }
+            _('u_id').value = res.u_id;
+
+            // show otp here
+            _('signup').style.display = 'none';
+            _('otp-card').style.display = 'block';
+        }
+    
+    </script>
+</body>
+</html>

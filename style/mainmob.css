@@ -1,0 +1,39 @@
+@media screen and (max-width: 600px) {
+    .file-parent{
+        width: 95%;
+        height: 250px;
+    }
+    .folders .folder{
+        width: 200px;
+    }
+    .route{
+        font-size: 13px;
+        font-weight: normal;
+        letter-spacing: normal;
+    }
+    .back-to-top-btn{
+        padding: 6px 14px;
+    }
+    .file-options{
+        display: block;
+    }    
+    .center{                
+        height: 100%;
+        /* background-color: blue; */
+    }
+    .modal-img{
+        width: 99%; 
+    }   
+    .modal-close-btn{
+        right: 20px;
+        opacity: 1;
+        top: 25px;
+    }
+    .path{
+        padding: 10px 10px;
+    }
+    /* Login  */
+    .card{
+        width: 75%;
+    }
+}
