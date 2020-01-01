@@ -419,7 +419,7 @@ function showWarning(content, justShowHide=true){
     _('notification-content').innerHTML = content;
     _('notification-container').style.backgroundColor = red;
     _('notification-container').style.right = '10px';
-    if(justShow){
+    if(justShowHide){
         setTimeout(()=>{
             _('notification-container-close').click();        
         }, displayTime);
