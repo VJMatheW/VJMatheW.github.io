@@ -235,8 +235,8 @@
             //     return;
             // }
             let txt = _('link-share');
-            console.log(baseURL+res.link)
-            txt.innerHTML = baseURL+res.link;
+            console.log(window.location.origin+res.link)
+            txt.innerHTML = window.location.origin+res.link;
             if (document.selection) { // IE
                 var range = document.body.createTextRange();
                 range.moveToElementText(_('link-share'));
