@@ -2,9 +2,9 @@ const controller = new AbortController();
 // signal to pass to fetch
 const signal = controller.signal;
 
-let baseURL = 'http://colorhomes.ddns.net:8081';
+// let baseURL = 'http://colorhomes.ddns.net:8081';
 // let baseURL = 'http://192.168.1.57:5000';
-// let baseURL = 'http://localhost:5000';
+let baseURL = 'http://localhost:5000';
 
 let currentDirPath = 'MA==';
 
