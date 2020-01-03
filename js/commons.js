@@ -2,9 +2,9 @@ const controller = new AbortController();
 // signal to pass to fetch
 const signal = controller.signal;
 
-// let baseURL = 'http://colorhomes.ddns.net:8081';
+let baseURL = 'http://colorhomes.ddns.net:8081';
 // let baseURL = 'http://192.168.1.57:5000';
-let baseURL = 'http://localhost:5000';
+// let baseURL = 'http://localhost:5000';
 
 let currentDirPath = 'MA==';
 
@@ -76,12 +76,12 @@ function post(url, data){
     let statuscode;
     return fetch(baseURL+url, {
             method: 'post',
-            mode: 'no-cors', // no-cors, *cors, same-origin
+            // mode: 'no-cors', // no-cors, *cors, same-origin
             cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: 'same-origin', // include, *same-origin, omit
+            // credentials: 'same-origin', // include, *same-origin, omit
             headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer '+retrive('token'),
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+retrive('token'),
             // 'Content-Type': 'application/x-www-form-urlencoded',
             },
             redirect: 'follow', // manual, *follow, error
@@ -253,8 +253,7 @@ function attachSignin(element) {
             let id_token = googleUser.getAuthResponse().id_token;
             console.log("TOKEN : ", id_token);
             let data = {
-                'id_token': id_token,
-                'clientId': clientUnique
+                'id_token': id_token
             }
             let res = await post('/auth/signin', data);
             if(!res){
@@ -362,7 +361,7 @@ function appendToken(){
 }
 
 function isSignedIn(){
-    if(retrive('uid') == null){
+    if(retrive('uid') == null || retrive('uname') == null){
         return false
     }else{
         return true
