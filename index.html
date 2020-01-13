@@ -18,6 +18,14 @@
             position: absolute;
             top: 50px;
         }
+        .list-bg{
+            display: none;
+            position: absolute;
+            top: 0;
+            width: 100%;
+            height: 100vh;
+            cursor: pointer;
+        }
         .list{
             position: absolute;
             background-color: rgba(0, 0, 0, 0.7);
@@ -27,6 +35,7 @@
             height: 0px;
             overflow: hidden;
             transition: all 0.2s ease-in-out;
+            z-index: 101;
         }
         .list p {
             text-align: left;
@@ -98,8 +107,9 @@
         }
         .uname{
             position: absolute;
-            width: 13%;
+            width: 50%;
             bottom: -3px;
+            right: 30px;
             font-size: 8px;
             text-align: right;
         }
@@ -111,7 +121,7 @@
     <span class="more-options" id="more-options"><i class="fa fa-chevron-down"></i></span>
     <div class="more-options-container flex" id="more-options-container">
         <!-- Link sharing -->
-        <span id="link-sharing" title="Share this Folder"><i class="fa fa-link"></i></span>
+        <span id="link-sharing" title="Share this Folder"><i class="fa fa-link"></i> Protected Sharing</span>
     </div>
 
     <!-- Route / Path -->
@@ -120,17 +130,17 @@
             <span class="route" style="font-size:30px;" onclick="clearRoute();" >&#127968;</span>
             <span id="routes"></span>
         </div>
-        <div style="width: 15%;text-align: right;poisition: relative;">
+        <div style="width: 15%;text-align: right;">
             <input id="file" type="file" hidden="hidden" name="photo" onchange="uploadFilesSequentially(event)" accept="image/png, image/jpeg" multiple/>
             <div class="btn" id="listbtn" onclick="toggleList();" ><i class="fa fa-cog" aria-hidden="true"></i></div>
-            <div class="btn" id="" onclick="logout();" ><i class="fa fa-power-off" aria-hidden="true"></i></div>            
-            <p class="uname" id="uname" ></p>
+            <div class="btn" id="" onclick="logout();" ><i class="fa fa-power-off" aria-hidden="true"></i></div>                        
             <div class="list" id="list">                
                 <p onclick="toggleNewFolderModal();" ><i class="fa fa-folder-o" aria-hidden="true"></i> New Folder</p>
                 <p onclick="upload();"><i class="fa fa-upload" aria-hidden="true"></i> Upload Pic(s)</p>
-                <p style="border-top: 0.3px solid white;" ><input type="checkbox" onclick="toggleList();" id="dowload-hq"><i class="fa fa-download" style="margin-left: 13px;"></i> pics in HQ</p>
+                <p style="border-top: 0.3px solid white;" ><input type="checkbox" id="dowload-hq"><i class="fa fa-download" style="margin-left: 13px;"></i> pics in HQ</p>
             </div>            
         </div>
+        <p class="uname" id="uname" ></p>
     </div>
 
     <!-- Files a=and folders  -->
@@ -194,6 +204,10 @@
         </div>
     </div>
 
+    <!-- List Bg -->
+    <div class="list-bg" id="list-bg">
+    </div>
+
     <script src="./js/commons.js"></script>    
     <script src="./js/dirview.js"></script>
     <script src="./js/slideview.js"></script>
@@ -218,6 +232,9 @@
         }
 
         /** Event listeners */
+        _('list-bg').addEventListener('click',()=>{
+            toggleList()
+        })
 
         /* More option down arrow */
         _('more-options').addEventListener('click',()=>{
@@ -230,10 +247,9 @@
         /* Link Sharing function */
         _('link-sharing').addEventListener('click', async ()=>{
             let res = await get('/api/nostalgic/share/'+currentDirPath);
-            // if(!res.link){
-            //     showWarning('You cannot share home folder');
-            //     return;
-            // }
+            if(!res && !res.link){
+                return;
+            }
             let txt = _('link-share');
             console.log(window.location.origin+res.link)
             txt.innerHTML = window.location.origin+res.link;

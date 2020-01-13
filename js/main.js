@@ -6,65 +6,6 @@ let displayTime = 4000;
 let green = '#4CAF50';
 let red = "#f44336";
 
-function fetchFiles(){
-    fetch('/api/files')
-    .then(response => {
-        return response.json();
-    })
-    .then(arr=>{
-        images = arr;
-        forward();                
-    })
-}
-function backward(){
-    --initvalue;    
-    setImage();
-}
-function forward(){    
-    ++initvalue;
-    setImage();    
-}
-function setImage(){
-    console.log("setting imge");
-    let img = _('img');
-    console.log("Setimg initvalue  : ", initvalue)
-    initvalue = initvalue % images.length;    
-    fetch('/api/img/'+images[initvalue])
-    .then(response =>{
-        return response.json();
-    })
-    .then(obj =>{        
-        setDimension(obj.width, obj.height, obj.orientation);
-        _('img').src = "data:"+obj.mime+";base64, "+obj.base64; 
-        setTimeout(()=>{
-            if(slideshow){
-                console.log("change");
-                forward();
-            }
-        }, 2000);       
-    })
-}
-function setDimension(iw, ih, ori){
-    var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-    h = h - 50;
-    w = w - 50;
-    if(ih > iw && h > w){                
-        w = h*0.6;        
-    }else if(iw > ih && h > w){
-        h = w*0.6;        
-    }else if(w > h && ih > iw){
-        w = h*0.6;
-    }
-    _('width').innerHTML = "Width : "+w;
-    _('height').innerHTML = "Height : "+h;
-    _('iw').innerHTML = "Img Width : "+iw;
-    _('ih').innerHTML = "Img Height : "+ih;
-    _('ori').innerHTML = "Orientation : "+ori;    
-    _('img').height = Math.min(ih, h);
-    _('img').width = Math.min(iw, w);
-}
-
 /**
     func to set files and folders
  */
@@ -180,17 +121,19 @@ let showlist = true;
 function toggleList(){
     if(showlist){
         show();
+        _('list-bg').style.display = 'block';
         showlist = false;
-        setTimeout(()=>{close();}, displayTime);
+        // setTimeout(()=>{close();}, displayTime);
     }else{
         close();
+        _('list-bg').style.display = 'none';
         showlist = true;
     }
 }
 function show(e){
     let list = _('list');
     _('listbtn').innerHTML = '<i class="fa fa-times" aria-hidden="true"></i>';
-    list.style.height = '140px';
+    list.style.height = 'auto';
 }
 function close(e){
     let list = _('list');
@@ -227,6 +170,7 @@ function uploadFiles(e){
     let uploads = _('uploads');
     if(decision){
         toggleUploadProgress();
+        let dirPath = currentDirPath;
         _('upload-head-text').innerHTML = 'Uploading '+files.length+' items';
         uploads.style.display = 'block';
         for(i=0;i<files.length;i++){
@@ -235,7 +179,7 @@ function uploadFiles(e){
             promArr.push(
                 readFileAsDataURL(files[i])
                 .then(file=>{
-                    file['path'] = currentDirPath;
+                    file['path'] = dirPath;
                     return postAjax('/api/nostalgic/upload', file, uploadsItem);
                 })
             )
@@ -430,6 +374,7 @@ function showWarning(content, justShowHide=true){
     Function to toggle SignIn & SignUp Card
  */
 function toggleCard(e){
+    clearAllFields();
     let el = e.target;
     let elements = el.parentElement.children;
     for(i=0; i< elements.length; i++){
@@ -437,12 +382,38 @@ function toggleCard(e){
     }
     el.classList.add('card-head-active');
     if(el.innerHTML.toLowerCase().includes('in')){
+        hideall()
         _('signin').style.display = 'block';
-        _('signup').style.display = 'none';
-        _('otp-card').style.display = 'none';
     }else{
-        _('signin').style.display = 'none';
+        hideall()
         _('signup').style.display = 'block';
-        _('otp-card').style.display = 'none';
     }
 }
+
+/**
+    Hide every dialog
+ */
+function hideall(hideCardHead=false){
+    if(hideCardHead){
+        _('card-head').style.display = 'none';
+    }else{
+        _('card-head').style.display = 'flex';
+    }
+    _('signin').style.display = 'none';
+    _('signup').style.display = 'none';
+    _('otp-card').style.display = 'none';
+    _('forget-pass').style.display = 'none';
+    _('change-pass').style.display = 'none';
+}
+
+/**
+    Clear all fields
+ */
+ function clearAllFields(){
+     _('name-up').value = ''
+     _('mob-up').value = ''
+     _('pass-up').value = ''
+     _('pass1-up').value = ''
+     _('pass-in').value = ''
+     _('mob-in').value = ''
+ }

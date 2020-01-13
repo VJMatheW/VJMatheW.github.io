@@ -16,6 +16,32 @@ body{
     align-items: center;
     justify-content: center;
 }
+.loader-bg{
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0,0.35);
+    position: fixed; /* position must for z-index */
+    top: 0;
+    z-index: 101;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+@keyframes rotation{
+    from{
+        transform: rotate(0deg);
+    }
+    to{
+        transform: rotate(360deg);
+    }
+}
+.loader{
+    height: 75px;
+    width: 75px;
+    border: 12px dotted rgba(145, 7, 7, 1);
+    border-radius: 36px;
+    animation: rotation 3s linear infinite;
+}
 .modal-container-bg{    
     position: fixed;
     top: 0;

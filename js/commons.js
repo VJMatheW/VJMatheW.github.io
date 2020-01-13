@@ -2,9 +2,9 @@ const controller = new AbortController();
 // signal to pass to fetch
 const signal = controller.signal;
 
-let baseURL = 'http://colorhomes.ddns.net:8081';
+// let baseURL = 'http://colorhomes.ddns.net:8081';
 // let baseURL = 'http://192.168.1.57:5000';
-// let baseURL = 'http://localhost:5000';
+let baseURL = 'http://localhost:5000';
 
 let currentDirPath = 'MA==';
 
@@ -16,8 +16,29 @@ function __(cls){
     return document.getElementsByClassName(cls);
 }
 
+/** 
+    Loaders Function
+ */
+function showloader(){
+    let loader_bg = create('div', 'loader-bg', 'loader')
+    let loader = create('div', 'loader')
+
+    append(loader_bg, loader)
+    let body = document.getElementsByTagName('body')[0]
+    append(body, loader_bg)
+}
+
+function hideloader(){
+    let loader = _('loader')
+    if(loader){
+        loader.remove();
+    }
+
+}
+
 function get(url, headers, data={}){    
     let status;
+    showloader()
     return fetch(baseURL+url, {
         headers: {
             'Content-Type': 'application/json',
@@ -31,12 +52,15 @@ function get(url, headers, data={}){
     })
     .then(obj=>{
         if(status == 200){
+            hideloader()
             return obj;
         }
+        hideloader()
         showWarning(obj.error)
         return;
     })
     .catch(err=>{
+        hideloader()
         if(err == 'TypeError: Failed to fetch'){
             showWarning('Sorry... Our Servers are down. <br>Please try after some time.');
         }
@@ -74,6 +98,7 @@ function getImg(url, headers){
 
 function post(url, data){
     let statuscode;
+    showloader()
     return fetch(baseURL+url, {
             method: 'post',
             // mode: 'no-cors', // no-cors, *cors, same-origin
@@ -94,13 +119,18 @@ function post(url, data){
         })
         .then(obj=>{
             if(statuscode == 201 || statuscode == 200){
+                hideloader()
                 return obj;
             }else if(statuscode == 403){
+                hideloader()
+                showWarning(obj.error)
                 _('u_id').value = obj.u_id;
-                _('signin').style.display = 'none';
+                hideall()
                 _('otp-card').style.display = 'block';
+                _('resendotp').style.display = 'block';
             }else{
-                showWarning(obj.error)                
+                showWarning(obj.error) 
+                hideloader()               
             }
         })
         .catch(err=>{
@@ -324,6 +354,7 @@ function sanitize(obj){
                         error.push('Passwords do not match');
                     }
                 }
+                break;
             case 'name':
                 if(!isText(obj[key])){
                     error.push('Name can contain only Alphabetic characters');                    
@@ -361,7 +392,7 @@ function appendToken(){
 }
 
 function isSignedIn(){
-    if(retrive('uid') == null || retrive('uname') == null){
+    if(retrive('uid') == null || retrive('token') == null){
         return false
     }else{
         return true

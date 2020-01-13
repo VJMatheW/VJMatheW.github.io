@@ -36,4 +36,8 @@
     .card{
         width: 75%;
     }
+    /* Username under logout btn */
+    .uname{
+        right: 10;
+    }
 }

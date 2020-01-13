@@ -6,6 +6,25 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <!-- <meta name="google-signin-client_id" content="3339472325-1ggbeee3t78iplbmhuet40lomsepv2oa.apps.googleusercontent.com"> -->
     <title>Document</title>  
+    <style>
+        #resendotp{
+            display: none;
+            color: blue;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: underline;
+        }
+        #resendotp:hover{
+            color: rgb(0, 0, 173);
+        }
+        .link{
+            color: blue;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: underline;
+            text-align: left;
+        }
+    </style>
     <link rel="stylesheet" href="style/commons.css">  
     <link rel="stylesheet" href="style/main.css">
     <link rel="stylesheet" href="style/mainmob.css">
@@ -22,16 +41,16 @@
     <div class="modal-container-bg" style="display:block;">
         <div class="modal-content-center">
             <div class="card">
-                <div class="card-head">
+                <div class="card-head" id="card-head" >
                     <div class="card-head-active" onclick="toggleCard(event);" >Sign In</div>
                     <div onclick="toggleCard(event);" >Sign Up</div>
                 </div>
                 <!-- Sign In Content -->
-                <div class="card-content-login" id="signin" style="display: block;" >
+                <div class="card-content-login" id="signin" style="display: block;" > 
                     <div>
                         <input type="text" placeholder="Mobile No" maxlength="10" id="mob-in">
                         <input type="password" placeholder="Password" name="" id="pass-in">
-                        <a href="#">Forgot Password</a>
+                        <span class="link" onclick="showForgotPass();">Forgot Password</span class="link">
                         <button onclick="signin();" >Sign In</button>
                     </div>
                     <div class="modal-content-center">
@@ -43,7 +62,7 @@
                         </div>
                     </div>
                 </div>
-                <!-- Sign Up -->
+                <!-- Sign Up Content -->
                 <div id="signup" class="card-content-login" >
                     <div>
                         <input type="text" placeholder="Name"  id="name-up">
@@ -61,6 +80,26 @@
                         <input type="text" placeholder="Enter OTP" maxlength="6" id="otp">
                         <button onclick="confirmOTP();">Confirm</button>
                     </div>
+                    <div class="" onclick="resendOTP();" id="resendotp">resend OTP</div>
+                </div>
+                <!-- Forget Pass -->
+                <div id="forget-pass" class="card-content-login" >
+                    <div>
+                        <h1 style="text-align: center;" ><b>Forgot Password ? </b></h1>
+                        <h2>Enter your Mobile Number</h2>
+                        <input type="text" placeholder="Mobile No" maxlength="10" id="mob-forgot-pass">
+                        <button onclick="forgotpass();" >Confirm</button>
+                    </div>
+                </div>
+                <!-- Change Pass -->
+                <div id="change-pass" class="card-content-login">
+                    <div style="margin-top:30px;">
+                        <h2 style="text-align: center;" >Change Password</h2>
+                        <input type="text" placeholder="Enter OTP" maxlength="6" id="otp-pass-change">
+                        <input type="password" placeholder="Password" name="" id="pass-change">
+                        <input type="password" placeholder="Re-Type Password" name="" id="pass1-change">
+                        <button onclick="changepass();" >Confirm</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -71,7 +110,14 @@
     <script src="./js/main.js"></script>
     <script>
 
-        startApp(); // google sign in   
+        /* For Password press enter */ 
+        _('pass-in').addEventListener('keyup',(e)=>{
+            if(e.keyCode == 13){
+                signin();
+            }
+        })
+
+        startApp(); // google sign in  
 
         var clientUnique = Math.floor(Math.random()* 1000)  
 
@@ -80,6 +126,70 @@
             store('clientId', obj.clientId)
             store('uid', obj.uid)
             store('uname', obj.u_name)
+        }
+
+        function showForgotPass(){
+            hideall(true)
+            _('forget-pass').style.display = 'block'
+        }
+
+        async function forgotpass(){
+            let mobile_no = _('mob-forgot-pass').value;
+            let error = sanitize({'mobile_no': mobile_no });
+            if(error.length > 0){
+                showWarning(error[0]);
+                return;
+            }
+            let data = {
+                'mobile_no' : mobile_no
+            }
+            let res = await post('/auth/forgotpass', data)
+            if(!res){
+                return;
+            }
+            _('u_id').value = res.u_id
+            showNotification(`OTP sent to ${mobile_no}`)
+            hideall(true)
+            _('change-pass').style.display = 'block';
+        }
+
+        async function changepass(){
+            let u_id = _('u_id').value
+            let otp = _('otp-pass-change').value
+            let pass = _('pass-change').value
+            let pass1 = _('pass1-change').value
+            let error = sanitize({ 'otp': otp, 'password': pass, 'password1':pass1 })
+            if(error.length > 0){
+                showWarning(error[0]);
+                return;
+            }
+
+            let postData = {
+                'u_id': u_id,
+                'otp': otp,
+                'new_password': pass
+            }
+            let res = await post('/auth/setnewpassword', postData)
+            if(!res){
+                return
+            }
+            showNotification('Password Successfully Changed')
+            setTimeout(()=>{
+                window.location.reload()
+            }, 3000)
+        }
+
+        async function resendOTP(){
+            let uid = _('u_id').value;
+            console.log('Resend OTP : ',uid) 
+            let postData = {
+                'u_id': uid
+            }
+            let res = await post('/auth/resendotp', postData)
+            if(!res){
+                return
+            }
+            showNotification('OTP Sent to your mobile number');
         }
 
         async function confirmOTP(){
@@ -110,7 +220,7 @@
         async function signin(){
             let mobile_no = _('mob-in').value;
             let pass = _('pass-in').value;
-            let error = sanitize({'mobile_no': mobile_no, 'password': pass });
+            let error = sanitize({'mobile_no': mobile_no });
             if(error.length > 0){
                 showWarning(error[0]);
                 return;
@@ -156,9 +266,11 @@
             }
             _('u_id').value = res.u_id;
 
-            // show otp here
-            _('signup').style.display = 'none';
+            hideall();
             _('otp-card').style.display = 'block';
+            setTimeout(()=>{
+                _('resendotp').style.display = 'block';
+            }, 300000)            
         }
     
     </script>

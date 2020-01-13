@@ -30,6 +30,9 @@
                 let o = getUrlVars()['o']
                 console.log('ObT',o)
                 let res = await get('/api/auth/'+o)
+                if(!res){
+                    return
+                }
                 showNotification('Successfully Done ', false)
                 setTimeout(()=>{
                     redirect(''); }, 5000);

@@ -293,7 +293,7 @@ styling for back to top button
 /* Login  */
 .card{
     width: 40%;
-    min-height: 50%;
+    min-height: 10%;
     background-color: white;
 }
 .card-head{
