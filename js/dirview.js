@@ -99,7 +99,7 @@ function updateDirectoryListing(obj){
 
 async function download(path){ 
     if(path == ''){
-        path = '/api/nostalgic/download/'+_('dowload-hq').checked+'/'+images[index].path;
+        path = '/api/nostalgic/download/'+_('dowload-hq').checked+'/'+images[currentIndex].path;
     }else{
         path = '/api/nostalgic/download/'+_('dowload-hq').checked+'/'+path;
     }
