@@ -24,6 +24,34 @@
             text-decoration: underline;
             text-align: left;
         }
+        .info-container-bg{
+            position: absolute;
+            z-index: 105;
+            top: 0;
+            height: 100vh;
+            width: 100vw;
+            display: none;
+            padding: 40px 40px;
+        }
+        .info-content{
+            background-color:rgba(0, 0, 0, 0.8);
+            padding: 40px 20px;
+            color: white;
+            text-align: center;
+            border-radius: 5px;
+            max-height: 95vh;
+            overflow: scroll;
+        }
+        .info-content h1{
+            font-size: 20px;
+            margin: 15px 0px;
+        }
+        .info-content .que{
+            margin-top: 10px;
+        }
+        li{
+            list-style-type: none;
+        }
     </style>
     <link rel="stylesheet" href="style/commons.css">  
     <link rel="stylesheet" href="style/main.css">
@@ -31,6 +59,32 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
+    <!-- Info container bg -->
+    <div class="info-container-bg" id="info-container-bg">
+        <div class="info-content">
+            <div id="modal-close-btn" class="modal-close-btn" onclick="closeInfo();" ></div>
+            <h1>Thank you for Checking out getnostalgic.com<h1>
+            <h2 class="que">What's the use ?</h2>
+            <p class="ans" >This website can be used to upload and share memories (photos) among your friends and family</p>
+            <h2 class="que">Features ?</h2>
+            <p class="ans"> 
+                <ul>
+                    <li>- Protected sharing (One can view your album only after being authorized by you)</li>
+                    <li>- Collaborative upload, ask friends to upload photo that are with them </li>
+                    <li>- Download images in both Original and Compressed Quality</li>
+                    <li>- Slideshow images with adjustable transition speed</li>
+                    <li>- Google Sign-in</li>
+                </ul>
+            </p>
+            <h2 class="que">Upcoming Feature ?</h2>
+            <p class="ans">Suggest some on getnostalgiccare@gmail.com (or) 9042307071  </p>
+            <h2 class="que">How it is different from other available apps ?</h2>
+            <p class="ans">Nothing much, it was created for fun</p>
+            <h2 class="que">NOTE : </h2>
+            <p class="ans">If you use google signin do checkout for authorization request mail in SPAM folder</p>
+            
+        </div>
+    </div>
     <!-- Modal - DisplayNotification -->
     <div class="notification-container" id="notification-container">
         <i class="fa fa-times" style="float: right;" id="notification-container-close"></i>
@@ -109,6 +163,17 @@
     <script src="./js/commons.js"></script>
     <script src="./js/main.js"></script>
     <script>
+        window.onload = ()=>{
+            console.log("Loaded executing ")
+            setTimeout(()=>{
+                _('info-container-bg').style.display = 'block'
+
+            }, 3000)
+        }
+
+        function closeInfo(){
+            _('modal-close-btn').parentElement.parentElement.style.display = 'none';
+        }
 
         /* For Password press enter */ 
         _('pass-in').addEventListener('keyup',(e)=>{
