@@ -243,7 +243,7 @@ async function uploadFilesSequentially(e){
             }            
             // close the dialog goes here
             _('upload-head-text').innerHTML = 'Upload Completed';
-            showNotification('Upload Successful... Your uploads will be available soon :) ');
+            showNotification('Upload Successful... Your uploads will be available soon :) ', false);
             setTimeout(()=>{
                 toggleUploadProgressState = false;
                 _('uploads-items').innerHTML = '';

@@ -61,7 +61,15 @@ function createFile(path){
     file.onclick = (e)=>{
         slideView(e);
     }
+    let fileOpts = create('div','file-options-top');
+    let deleteBtn = create('span', 'delete', 'delete');
+    deleteBtn.innerHTML = "<i class='fa fa-trash-o' aria-hidden='true'></i>";//"&#11015;";
+    deleteBtn.onclick = function(e){
+        deleteImg(e, path)
+    }
+    append(fileOpts, deleteBtn)    
     append(fileParent, file);
+    append(fileParent, fileOpts)
     return fileParent;
 }
 
@@ -107,6 +115,19 @@ async function download(path){
     let a = create('a');
     a.href = baseURL+'/api/download/'+link.token;
     a.click();
+}
+
+async function deleteImg(e, path){
+    let decision = confirm("Sure ! You want to delete ?")
+    if(!decision){
+        return;
+    }
+    let res = await post('/api/nostalgic/delete/img/'+path, {})
+    if(!res){
+        return;
+    }
+    let node = e.target
+    node.parentElement.parentElement.parentElement.remove();
 }
 
 async function updateImageSrc(path,base64Url){

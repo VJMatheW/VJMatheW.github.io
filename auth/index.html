@@ -33,7 +33,7 @@
                 if(!res){
                     return
                 }
-                showNotification('Successfully Done ', false)
+                showNotification(res.info, false)
                 setTimeout(()=>{
                     redirect(''); }, 5000);
             }

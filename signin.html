@@ -165,10 +165,13 @@
     <script>
         window.onload = ()=>{
             console.log("Loaded executing ")
+            if(retrive('intro') != null){
+                return;
+            }
             setTimeout(()=>{
                 _('info-container-bg').style.display = 'block'
-
-            }, 3000)
+                store('intro','done')
+            }, 2000)
         }
 
         function closeInfo(){

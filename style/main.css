@@ -161,10 +161,18 @@
 .file-options .download{            
     float: right;
     font-size: 15px;
+    color: #4CAF50;
 }
 
 .file-options .download:hover{
-    color: black;
+    color: #4CAF50;
+}
+.file-options-top{
+    position: absolute;                       
+    padding: 5px 10px;
+}
+.file-options-top .delete{
+    color: #f44336;
 }
 
 .modal-top-menu .download{

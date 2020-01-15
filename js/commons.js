@@ -134,6 +134,7 @@ function post(url, data){
             }
         })
         .catch(err=>{
+            hideloader()
             if(err == 'TypeError: Failed to fetch'){
                 showWarning('Sorry... Our Servers are down. <br> Please try after sometime !!!');
             }
