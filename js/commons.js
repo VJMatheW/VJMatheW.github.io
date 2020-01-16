@@ -406,10 +406,14 @@ _('notification-container-close').addEventListener('click', ()=>{
 })
 
 /** Redirect to specified path */
-function redirect(uri=''){
+function redirect(uri='', forceHash=false){
     console.log("URI", uri);
-    if(uri == ''){        
-        window.location.replace('/')
+    if(uri == '' || forceHash){        
+        if(forceHash){
+            window.location.replace('/'+uri)    
+        }else{
+            window.location.replace('/')
+        }
     }else{
         var url = uri
         if(url.includes('#')){

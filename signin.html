@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <!-- <meta name="google-signin-client_id" content="3339472325-1ggbeee3t78iplbmhuet40lomsepv2oa.apps.googleusercontent.com"> -->
-    <title>Document</title>  
+    <link rel="icon" href="logo.png">
+    <title>SignIn-GetNostalgic</title>  
     <style>
         #resendotp{
             display: none;
@@ -162,8 +163,15 @@
     <script src="https://apis.google.com/js/api:client.js"></script>
     <script src="./js/commons.js"></script>
     <script src="./js/main.js"></script>
-    <script>
+    <script>        
         window.onload = ()=>{
+            if(isSignedIn()){
+                if(window.location.href.includes('#')){
+                    redirect(window.location.href);
+                }else{
+                    redirect('')
+                }
+            }
             console.log("Loaded executing ")
             if(retrive('intro') != null){
                 return;

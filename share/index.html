@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Shared</title>
+    <title>Shared-GetNostalgic</title>
+    <link rel="icon" href="logo.png">
     <link rel="stylesheet" href="../style/commons.css">
+    <script src="../js/commons.js"></script>
+    <script src="../js/main.js"></script>
 </head>
 <body>
     <!-- Modal - DisplayNotification -->
@@ -13,8 +16,6 @@
         <i class="fa fa-times" style="float: right;" id="notification-container-close"></i>
         <div class="notification-content" id="notification-content"></div>
     </div>
-    <script src="../js/commons.js"></script>
-    <script src="../js/main.js"></script>
     <script>
         window.onload = async ()=>{
            console.log('loaded')
@@ -28,7 +29,11 @@
                 if(isSignedIn()){
                     let res = await get('/api/nostalgic/share/auth/'+share)
                     console.log("res",res)
-                    showNotification(res.info, false)
+                    if(res.status){ // already accepted
+                        redirect('#'+res.o_id, true)
+                    }else if(res.status == null || !res.status){
+                        showNotification(res.info, false)
+                    }
                 }else{
                     console.log('/signin.html#'+arr[1]+'#share')
                     window.location.href = '/signin.html#'+arr[1]+'#share'
@@ -36,14 +41,6 @@
                 
                }               
            }
-       }
-
-       function isSignedIn(){
-           console.log(localStorage.getItem('uid'))
-           if(localStorage.getItem('uid') != null){
-              return true
-           }
-           return false;
        }
     </script>    
 </body>

@@ -102,6 +102,7 @@
 }
 .folder .content{
     font-size: 70px;
+    color: rgba(145, 7, 7, 1);
 }
 .folder .content:hover{
     font-size: 65px;

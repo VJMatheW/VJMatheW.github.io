@@ -41,7 +41,7 @@ function createFolder(folObj){
     }
 
     let content = create('div', 'content');
-    content.innerHTML = "&#128193;";
+    content.innerHTML = "<i class=\"fa fa-folder-open \"></i>";//"&#128193;";
 
     let name = create('div', 'name');
     name.innerHTML = folObj.folderName;
