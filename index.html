@@ -227,7 +227,11 @@
         fast();
 
         function logout(){
-            window.localStorage.clear();
+            // window.localStorage.clear(); 
+            window.localStorage.removeItem('uname')
+            window.localStorage.removeItem('uid')
+            window.localStorage.removeItem('token')
+            window.localStorage.removeItem('clientId')
             redirect('/signin.html');
         }
 
