@@ -123,6 +123,7 @@
     <div class="more-options-container flex" id="more-options-container">
         <!-- Link sharing -->
         <span id="link-sharing" title="Share this Folder"><i class="fa fa-link"></i> Protected Sharing</span>
+        <span id="public-link-sharing" title="Share this Folder Publicly"><i class="fa fa-link"></i> Public Sharing</span>
     </div>
 
     <!-- Route / Path -->
@@ -217,6 +218,10 @@
 
         if(isSignedIn()){
             _('uname').innerHTML = retrive('uname')
+            if(retrive('uid') == 10000){
+                _('list').children[0].style.display = "none"
+                _('list').children[1].style.display = "none"
+            }
         }
 
         fetchDir();          
@@ -270,6 +275,29 @@
             }
             document.execCommand("copy");            
             showNotification('Shareable link Copied to clipboard');
+        })
+
+        /* Public Link Sharing function */
+        _('public-link-sharing').addEventListener('click', async ()=>{
+            let res = await get('/api/nostalgic/share/public/'+currentDirPath);
+            if(!res && !res.link){
+                return;
+            }
+            let txt = _('link-share');
+            console.log(window.location.origin+res.link)
+            txt.innerHTML = window.location.origin+res.link;
+            if (document.selection) { // IE
+                var range = document.body.createTextRange();
+                range.moveToElementText(_('link-share'));
+                range.select();
+            } else if (window.getSelection) {
+                var range = document.createRange();
+                range.selectNode(_('link-share'));
+                window.getSelection().removeAllRanges();
+                window.getSelection().addRange(range);
+            }
+            document.execCommand("copy");            
+            showNotification('Publicly shareable link copied to clipboard');
         })
     </script>
 </body>
